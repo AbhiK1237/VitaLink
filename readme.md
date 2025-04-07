@@ -1,9 +1,9 @@
 ## Setting Up the Development Environment
 
-Follow these steps to set up the project locally:
+Follow these steps to set up the project locally: (python 3.11.8 and django 4.1.13)
 
 1. **Create a Virtual Environment**  
-   Isolate project dependencies to avoid conflicts with system-wide packages.  
+   Isolate project dependencies to avoid conflicts with system-wide packages.
    ```bash
    python -m venv venv
    ```
@@ -19,7 +19,7 @@ Follow these steps to set up the project locally:
      ```
 
 3. **Install Project Dependencies**  
-   Install all required packages listed in `requirements.txt`.  
+   Install all required packages listed in `requirements.txt`.
    ```bash
    pip install -r requirements.txt
    ```
