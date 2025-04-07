@@ -1,29 +1,50 @@
-This project allows users to book appointments with doctors, pay for lab tests online, and securely share health records.
+## Setting Up the Development Environment
 
----
+Follow these steps to set up the project locally:
 
-## 🚀 Getting Started
+1. **Create a Virtual Environment**  
+   Isolate project dependencies to avoid conflicts with system-wide packages.  
+   ```bash
+   python -m venv venv
+   ```
 
-Follow these steps to set up and run the application locally.
+2. **Activate the Virtual Environment**  
+   - On **Linux** or **macOS**:  
+     ```bash
+     source venv/bin/activate
+     ```
+   - On **Windows**:  
+     ```bash
+     venv\Scripts\activate
+     ```
 
-### 1. Create Python Virtual Environment
+3. **Install Project Dependencies**  
+   Install all required packages listed in `requirements.txt`.  
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-#install django version specified in requirements.txt and Python 3.11.8
+4. **Set Up Environment Variables**  
+   Copy the example environment configuration to create your own `.env` file.  
+   Update the `.env` file with your project-specific settings (e.g., database credentials).  
+   ```bash
+   cp .env.example .env
+   ```
 
-```bash
+5. **Upgrade Simple JWT Package**  
+   Ensure you're using the latest version of Django REST Framework's Simple JWT for authentication.  
+   ```bash
+   pip install --upgrade djangorestframework-simplejwt
+   ```
 
- 1) Start python virtual env
-    python -m venv venv
- 2) Activate the virtual environment venv
-    source venv/bin/activate
- 3) Install python pip paclages
-    pip install -r requirements
- 4) Create .env from  .env.example and add secret key
-    cp .env.example .env
- 5) Upgrade django framework
-    pip install --upgrade djangorestframework-simplejwt
- 6) Migrate DB
-    python manage.py migrate
- 7) Start the application
-    python manage.py runserver
-```
+6. **Apply Database Migrations**  
+   Set up the database schema based on your Django models.  
+   ```bash
+   python manage.py migrate
+   ```
+
+7. **Run the Development Server**  
+   Start the Django development server to view your project in the browser at `http://127.0.0.1:8000/`.  
+   ```bash
+   python manage.py runserver
+   ```
