@@ -8,7 +8,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=0"
     />
-    <title>HealthStack</title>
+    <title>TotalCare</title>
 
     <!-- Favicons -->
     <link
@@ -57,7 +57,10 @@
       href="{% static 'HealthStack-System/css/Normal/style.css' %}"
     />
 
-    <link rel="stylesheet"href="{% static 'HealthStack-System/css/Normal/search2.css' %}">
+    <link
+      rel="stylesheet"
+      href="{% static 'HealthStack-System/css/Normal/search2.css' %}"
+    />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -70,49 +73,57 @@
     <div class="main-wrapper">
       <!-- Header -->
       <header class="header">
-            {% if user.is_authenticated and user.is_patient %}
-		    {% include 'patient_navbar.html' %}
-	        {% endif %}
-				
-		    {% if user.is_authenticated and user.is_doctor %}
-			{% include 'doctor-navbar.html' %}
-			{% endif %}
+        {% if user.is_authenticated and user.is_patient %} {% include
+        'patient_navbar.html' %} {% endif %} {% if user.is_authenticated and
+        user.is_doctor %} {% include 'doctor-navbar.html' %} {% endif %}
       </header>
       <!-- /Header -->
 
       <!-- Breadcrumb -->
       <div class="breadcrumb-bar">
-				<div class="container-fluid">
-					<div class="row align-items-center">
-						<div class="col-md-6 col-6">
-							<nav aria-label="breadcrumb" class="page-breadcrumb">
-								<ol class="breadcrumb">
-									{% if user.is_authenticated and user.is_patient %}
-									<li class="breadcrumb-item"><a href="{% url 'patient-dashboard' %}">Home</a></li>
-									{% endif %}
-
-									{% if user.is_authenticated and user.is_doctor %}
-									<li class="breadcrumb-item"><a href="{% url 'doctor-dashboard' %}">Home</a></li>
-									{% endif %}
-									<li class="breadcrumb-item active" aria-current="page">Hospital</li>
-								</ol>
-							</nav>
-							<h2 class="breadcrumb-title">Doctor List</h2>
-						</div>
-						<div class="col-md-6 col-6 text-right">
-							
-							<div class="top-nav-search">
-								<form action="{% url 'hospital-doctor-list' pk=pk_id %}" method="GET">
-									<input type="text" class="form-control" placeholder="Search doctor" name="search_query" value="{{search_query}}">
-									<button class="btn" type="submit"><i class="fa fa-search"></i></button>
-								</form>
-							</div> 
-
-              
-						</div>
-					</div>
-				</div>
-			</div>
+        <div class="container-fluid">
+          <div class="row align-items-center">
+            <div class="col-md-6 col-6">
+              <nav aria-label="breadcrumb" class="page-breadcrumb">
+                <ol class="breadcrumb">
+                  {% if user.is_authenticated and user.is_patient %}
+                  <li class="breadcrumb-item">
+                    <a href="{% url 'patient-dashboard' %}">Home</a>
+                  </li>
+                  {% endif %} {% if user.is_authenticated and user.is_doctor %}
+                  <li class="breadcrumb-item">
+                    <a href="{% url 'doctor-dashboard' %}">Home</a>
+                  </li>
+                  {% endif %}
+                  <li class="breadcrumb-item active" aria-current="page">
+                    Hospital
+                  </li>
+                </ol>
+              </nav>
+              <h2 class="breadcrumb-title">Doctor List</h2>
+            </div>
+            <div class="col-md-6 col-6 text-right">
+              <div class="top-nav-search">
+                <form
+                  action="{% url 'hospital-doctor-list' pk=pk_id %}"
+                  method="GET"
+                >
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Search doctor"
+                    name="search_query"
+                    value="{{search_query}}"
+                  />
+                  <button class="btn" type="submit">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- /Breadcrumb -->
 
       <!-- Page Content -->
@@ -122,19 +133,15 @@
             <!-- Profile Sidebar -->
             <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
               <div>
-                {% if user.is_authenticated and user.is_patient %}
-				        {% include 'patient-sidebar.html' %}
-				        {% endif %}
-
-				        {% if user.is_authenticated and user.is_doctor %}
-				        {% include 'doctor-sidebar.html' %}
-				        {% endif %}
+                {% if user.is_authenticated and user.is_patient %} {% include
+                'patient-sidebar.html' %} {% endif %} {% if
+                user.is_authenticated and user.is_doctor %} {% include
+                'doctor-sidebar.html' %} {% endif %}
               </div>
             </div>
             <!-- / Profile Sidebar -->
 
             <div class="col-md-12 col-lg-8 col-xl-9">
-
               <!-- Doctor Widget -->
               {% for doctor in doctors %}
               <div class="card">
@@ -142,7 +149,9 @@
                   <div class="doctor-widget">
                     <div class="doc-info-left">
                       <div class="doctor-img">
-                        <a href="{% url 'doctor-profile' pk=doctor.doctor_id %}">
+                        <a
+                          href="{% url 'doctor-profile' pk=doctor.doctor_id %}"
+                        >
                           <img
                             src="{{ doctor.featured_image.url }}"
                             class="img-fluid"
@@ -152,9 +161,14 @@
                       </div>
                       <div class="doc-info-cont">
                         <h4 class="doc-name">
-                          <a href="{% url 'doctor-profile' pk=doctor.doctor_id %}">Dr. {{doctor.name}}</a>
+                          <a
+                            href="{% url 'doctor-profile' pk=doctor.doctor_id %}"
+                            >Dr. {{doctor.name}}</a
+                          >
                         </h4>
-                        <p class="doc-speciality">{{ doctor.department_name.hospital_department_name }}</p>
+                        <p class="doc-speciality">
+                          {{ doctor.department_name.hospital_department_name }}
+                        </p>
                         <h5 class="doc-department">
                           <img
                             src="{% static 'HealthStack-System/images/Normal/specialities/specialities-05.png'%}"
@@ -230,7 +244,9 @@
                         </ul>
                       </div>
                       <div class="clinic-booking">
-                        <a class="view-pro-btn" href="{% url 'doctor-profile' pk=doctor.doctor_id %}"
+                        <a
+                          class="view-pro-btn"
+                          href="{% url 'doctor-profile' pk=doctor.doctor_id %}"
                           >View Profile</a
                         >
 
@@ -248,7 +264,6 @@
               </div>
               {% endfor %}
               <!-- /Doctor Widget -->
-             
 
               <div class="load-more text-center">
                 <a class="btn btn-primary btn-sm" href="javascript:void(0);"
