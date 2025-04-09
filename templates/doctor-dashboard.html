@@ -71,8 +71,7 @@
                   </li>
                 </ol>
               </nav>
-              <h2 class="breadcrumb-title">Doctor Dashboard</h2>
-              {% include 'message.html' %}
+              <h2 class="breadcrumb-title">Doctor Dashboard</h2>{% include 'message.html' %}
             </div>
           </div>
         </div>
@@ -367,14 +366,13 @@
                                       >
                                     </td>
                                     <td>
-                                      {% if today.appointment_status ==
-                                      'pending' %}
+                                      {% if today.appointment_status == 'pending' %}
                                       <span
                                         class="badge badge-pill bg-warning-light"
                                         >Pending</span
                                       >
-                                      {% endif %} {% if today.appointment_status
-                                      == 'confirmed' %}
+                                      {% endif %} 
+                                      {% if today.appointment_status == 'confirmed' %}
                                       <span
                                         class="badge badge-pill bg-success-light"
                                         >Confirmed</span
