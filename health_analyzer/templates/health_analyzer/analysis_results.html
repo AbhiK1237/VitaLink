@@ -1,0 +1,237 @@
+<!-- health_analyzer/templates/health_analyzer/analysis.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Health Analysis Results{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+    .markdown-content h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        color: #2563eb;
+    }
+    .markdown-content h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-top: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+    .markdown-content ul {
+        list-style-type: disc;
+        padding-left: 1.5rem;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .markdown-content ol {
+        list-style-type: decimal;
+        padding-left: 1.5rem;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .markdown-content p {
+        margin-bottom: 0.75rem;
+    }
+    .markdown-content a {
+        color: #2563eb;
+        text-decoration: underline;
+    }
+    .chat-bubble {
+        max-width: 80%;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+        margin-bottom: 1rem;
+    }
+    .user-bubble {
+        background-color: #e9f5ff;
+        border: 1px solid #cce5ff;
+        margin-left: auto;
+        border-bottom-right-radius: 0.25rem;
+    }
+    .assistant-bubble {
+        background-color: #f0f9ff;
+        border: 1px solid #dbeafe;
+        margin-right: auto;
+        border-bottom-left-radius: 0.25rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-4 flex items-center">
+            <a href="{% url 'health_analyzer:analyze' %}" class="text-blue-600 hover:underline mr-2">
+                &larr; Back to Health Analysis
+            </a>
+            <span class="text-gray-400 text-sm">Analysis from {{ analysis.created_at|date:"F j, Y, g:i a" }}</span>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow overflow-hidden mb-8">
+            <div class="p-6 border-b">
+                <h1 class="text-2xl font-bold mb-2">Your Health Analysis</h1>
+                <p class="text-gray-600">Based on your health profile data and personal habits.</p>
+            </div>
+            
+            <!-- Current Health Assessment -->
+            <div class="p-6 border-b">
+                <h2 class="text-xl font-semibold mb-4 text-blue-700">Current Health Assessment</h2>
+                <div class="markdown-content prose max-w-none" id="health-assessment">
+                    {{ analysis.current_health_assessment|linebreaks }}
+                </div>
+            </div>
+            
+            <!-- Potential Health Issues -->
+            <div class="p-6 border-b bg-gray-50">
+                <h2 class="text-xl font-semibold mb-4 text-blue-700">Potential Health Issues</h2>
+                <div class="markdown-content prose max-w-none" id="health-issues">
+                    {{ analysis.potential_health_issues|linebreaks }}
+                </div>
+            </div>
+            
+            <!-- Risk Minimization Recommendations -->
+            <div class="p-6">
+                <h2 class="text-xl font-semibold mb-4 text-blue-700">Risk Minimization Recommendations</h2>
+                <div class="markdown-content prose max-w-none" id="recommendations">
+                    {{ analysis.risk_minimization_recommendations|linebreaks }}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Follow-up Questions Section -->
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Follow-up Questions</h2>
+            
+            <div id="conversation-container" class="mb-6 max-h-96 overflow-y-auto">
+                {% if conversations %}
+                    {% for conv in conversations %}
+                        <div class="chat-bubble user-bubble">
+                            <p class="font-medium">You asked:</p>
+                            <p>{{ conv.question }}</p>
+                        </div>
+                        <div class="chat-bubble assistant-bubble markdown-content">
+                            <p class="font-medium">Health Assistant:</p>
+                            <div class="response-content">{{ conv.answer|linebreaks }}</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-gray-500 py-4">
+                        <p>No follow-up questions yet. Ask something below!</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <form id="follow-up-form" class="flex flex-col">
+                {% csrf_token %}
+                <label for="{{ form.question.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Ask a follow-up question:</label>
+                {{ form.question }}
+                <button type="submit" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full md:w-auto md:self-end">
+                    Ask Question
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Convert markdown to HTML for analysis sections
+        function renderMarkdown() {
+            document.querySelectorAll('.markdown-content').forEach(function(el) {
+                if (el.classList.contains('response-content')) {
+                    el.innerHTML = marked.parse(el.textContent);
+                }
+            });
+        }
+        renderMarkdown();
+        
+        // Handle follow-up question form submission
+        const form = document.getElementById('follow-up-form');
+        const conversationContainer = document.getElementById('conversation-container');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const questionInput = document.getElementById('{{ form.question.id_for_label }}');
+            const question = questionInput.value.trim();
+            
+            if (!question) return;
+            
+            // Show loading state
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
+            submitButton.disabled = true;
+            submitButton.textContent = 'Processing...';
+            
+            // Create user bubble
+            const userBubble = document.createElement('div');
+            userBubble.className = 'chat-bubble user-bubble';
+            userBubble.innerHTML = `
+                <p class="font-medium">You asked:</p>
+                <p>${question}</p>
+            `;
+            conversationContainer.appendChild(userBubble);
+            
+            // Create placeholder for assistant response
+            const assistantBubble = document.createElement('div');
+            assistantBubble.className = 'chat-bubble assistant-bubble';
+            assistantBubble.innerHTML = `
+                <p class="font-medium">Health Assistant:</p>
+                <div class="response-content">
+                    <p class="text-gray-500">Thinking...</p>
+                </div>
+            `;
+            conversationContainer.appendChild(assistantBubble);
+            
+            // Scroll to bottom
+            conversationContainer.scrollTop = conversationContainer.scrollHeight;
+            
+            // Send request to server
+            const formData = new FormData();
+            formData.append('question', question);
+            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+            
+            fetch('{% url "health_analyzer:follow_up" analysis.id %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update assistant bubble with response
+                    const responseDiv = assistantBubble.querySelector('.response-content');
+                    responseDiv.innerHTML = marked.parse(data.answer);
+                    
+                    // Reset form
+                    questionInput.value = '';
+                } else {
+                    // Show error
+                    assistantBubble.querySelector('.response-content').innerHTML = 
+                        `<p class="text-red-500">Error: ${data.error || 'Something went wrong'}</p>`;
+                }
+                
+                // Scroll to new message
+                conversationContainer.scrollTop = conversationContainer.scrollHeight;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                assistantBubble.querySelector('.response-content').innerHTML = 
+                    '<p class="text-red-500">Error: Failed to get a response. Please try again.</p>';
+            })
+            .finally(() => {
+                // Reset button state
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

@@ -29,6 +29,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
+GEMINI_API_KEY="AIzaSyAcwIQ3QuRQmKtC8xdn5V1fML2--3uN25Q"
+
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
@@ -54,6 +57,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'ChatApp.apps.ChatappConfig',
     'debug_toolbar',
+    'health_analyzer',
+
  
 
 ]
