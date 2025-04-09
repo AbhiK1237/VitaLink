@@ -8,7 +8,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=0"
     />
-    <title>HealthStack</title>
+    <title>TotalCare</title>
 
     <!-- Favicons -->
     <link
@@ -53,23 +53,37 @@
       <!-- header -->
 
       <!-- Home Banner -->
-      <section class="section section-search" style="background-color:rgb(172, 209, 242); padding-bottom: 0px;min-height: 0px;padding-left: 0px;padding-right: 0px;">
-        <div  style="background-color:rgb(172, 209, 242)">
-          <div class="banner-wrapper" style="background-color:rgb(172, 209, 242);padding-bottom: 20px;padding-top: 12px;"> 
+      <section
+        class="section section-search"
+        style="
+          background-color: rgb(172, 209, 242);
+          padding-bottom: 0px;
+          min-height: 0px;
+          padding-left: 0px;
+          padding-right: 0px;
+        "
+      >
+        <div style="background-color: rgb(172, 209, 242)">
+          <div
+            class="banner-wrapper"
+            style="
+              background-color: rgb(172, 209, 242);
+              padding-bottom: 20px;
+              padding-top: 12px;
+            "
+          >
             <div class="banner-header text-center">
-              <h1>Welcome To HealthStack</h1>
-              <p>
-                Choose well by choosing us.
-              </p>
+              <h1>Welcome To TotalCare</h1>
+              <p>Choose well by choosing us.</p>
             </div>
 
-           
             <!-- /Search -->
           </div>
           <div class="home-image">
             <img
               src="{% static 'HealthStack-System/images/Normal/p2.png' %}"
-              class="img-fluid" style="width: 100%;"
+              class="img-fluid"
+              style="width: 100%"
             />
           </div>
         </div>
@@ -81,8 +95,7 @@
         <div class="container-fluid">
           <div class="section-header text-center">
             <h2>Clinic and Specialities</h2>
-            <p class="sub-title">
-            </p>
+            <p class="sub-title"></p>
           </div>
           <div class="row justify-content-center">
             <div class="col-md-9">
@@ -175,9 +188,7 @@
                 <p>From the Best</p>
               </div>
               <div class="about-content">
-                <p>
-                  You can book doctors from any hospital from here.
-                </p>
+                <p>You can book doctors from any hospital from here.</p>
                 <!-- <p>
                   web page editors now use Lorem Ipsum as their default model
                   text, and a search for 'lorem ipsum' will uncover many web
@@ -188,10 +199,8 @@
               </div>
             </div>
 
-
             <div class="col-lg-8">
               <div class="doctor-slider slider">
-
                 {% for doctor in doctors %}
                 <!-- Doctor Widget -->
                 <div class="profile-widget">
@@ -215,23 +224,27 @@
                     <p class="speciality">
                       {{ doctor.department_name.hospital_department_name }}
                     </p>
-                    {% comment %} <div class="rating">
+                    {% comment %}
+                    <div class="rating">
                       <i class="fas fa-star filled"></i>
                       <i class="fas fa-star filled"></i>
                       <i class="fas fa-star filled"></i>
                       <i class="fas fa-star filled"></i>
                       <i class="fas fa-star filled"></i>
                       <span class="d-inline-block average-rating">(17)</span>
-                    </div> {% endcomment %}
+                    </div>
+                    {% endcomment %}
                     <ul class="available-info">
                       <li>
-                        <i class="fas fa-map-marker-alt"></i> {{doctor.hospital_name}}
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{doctor.hospital_name}}
                       </li>
                       <li>
                         <i class="far fa-clock"></i> {{ doctor.visiting_hour }}
                       </li>
                       <li>
-                        <i class="far fa-money-bill-alt"></i> Consulation fee: {{ doctor.consultation_fee }} BDT
+                        <i class="far fa-money-bill-alt"></i> Consulation fee:
+                        {{ doctor.consultation_fee }} BDT
                         <i
                           class="fas fa-info-circle"
                           data-toggle="tooltip"
@@ -239,17 +252,12 @@
                         ></i>
                       </li>
                     </ul>
-                    
                   </div>
                 </div>
                 <!-- /Doctor Widget -->
                 {% endfor %}
-
-
-               
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -270,8 +278,9 @@
               <div class="section-header">
                 <h2 class="mt-2">Availabe Hospitals</h2>
                 <p>
-                  Here You can access multiple hospitals. You can book your appointment from
-                  your doctor & can collect all hospital infromations from here.
+                  Here You can access multiple hospitals. You can book your
+                  appointment from your doctor & can collect all hospital
+                  infromations from here.
                 </p>
               </div>
               <div class="features-slider slider">
@@ -287,8 +296,6 @@
                 </div>
                 {% endfor %}
                 <!-- /Slider Item -->
-
-                
               </div>
             </div>
           </div>

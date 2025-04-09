@@ -8,7 +8,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=0"
     />
-    <title>HealthStack</title>
+    <title>TotalCare</title>
 
     <!-- Favicons -->
     <link
@@ -46,7 +46,7 @@
     <![endif]-->
   </head>
   <body>
-  {% if user.is_authenticated %}
+    {% if user.is_authenticated %}
     <!-- Main Wrapper -->
     <div class="main-wrapper">
       <!-- Header -->
@@ -71,7 +71,8 @@
                   </li>
                 </ol>
               </nav>
-              <h2 class="breadcrumb-title">Doctor Dashboard</h2>{% include 'message.html' %}
+              <h2 class="breadcrumb-title">Doctor Dashboard</h2>
+              {% include 'message.html' %}
             </div>
           </div>
         </div>
@@ -162,14 +163,16 @@
                   <div class="appointment-tab">
                     <!-- Appointment Tab -->
                     <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
-                      {% comment %} <li class="nav-item">
+                      {% comment %}
+                      <li class="nav-item">
                         <a
                           class="nav-link active"
                           href="#upcoming-appointments"
                           data-toggle="tab"
                           >Upcoming</a
                         >
-                      </li> {% endcomment %}
+                      </li>
+                      {% endcomment %}
                       <li class="nav-item">
                         <a
                           class="nav-link active"
@@ -181,7 +184,8 @@
                     </ul>
                     <!-- /Appointment Tab -->
 
-                    {% comment %} <div class="tab-content">
+                    {% comment %}
+                    <div class="tab-content">
                       <!-- Upcoming Appointment Tab -->
                       <div
                         class="tab-pane show active"
@@ -205,7 +209,6 @@
                                   </tr>
                                 </thead>
                                 <tbody>
-
                                   {% for appointment in appointments %}
                                   <tr>
                                     <td>
@@ -218,7 +221,11 @@
                                             src="{{appointment.patient.featured_image.url}}"
                                             alt="User Image"
                                         /></a>
-                                        <a href="patient-profile.html">{{appointment.patient.name}}<span>#PT{{appointment.serial_number}}</span></a>
+                                        <a href="patient-profile.html"
+                                          >{{appointment.patient.name}}<span
+                                            >#PT{{appointment.serial_number}}</span
+                                          ></a
+                                        >
                                       </h2>
                                     </td>
                                     <td>
@@ -231,54 +238,83 @@
                                     <td>
                                       {{appointment.patient.email}}
                                       <span class="d-block text-info"
-                                        >Phone: {{appointment.patient.phone_number}}</span
+                                        >Phone:
+                                        {{appointment.patient.phone_number}}</span
                                       >
                                     </td>
                                     <td>
-                                      {% if appointment.payment_status == 'pending' %}
-                                      <span class="badge badge-pill bg-warning-light">Pending</span>
-                                      {% endif %}
-                                      {% if appointment.payment_status == 'VALID' %}
-                                      <span class="badge badge-pill bg-success-light">Paid</span>
+                                      {% if appointment.payment_status ==
+                                      'pending' %}
+                                      <span
+                                        class="badge badge-pill bg-warning-light"
+                                        >Pending</span
+                                      >
+                                      {% endif %} {% if
+                                      appointment.payment_status == 'VALID' %}
+                                      <span
+                                        class="badge badge-pill bg-success-light"
+                                        >Paid</span
+                                      >
                                       {% endif %}
                                     </td>
                                     <td>
-                                      {% if appointment.appointment_status == 'pending' %}
-                                      <span class="badge badge-pill bg-warning-light">Pending</span>
-                                      {% endif %}
-                                      {% if appointment.appointment_status == 'confirmed' %}
-                                      <span class="badge badge-pill bg-success-light">Confirmed</span>
-                                      {% endif %}
-                                      {% if appointment.appointment_status == 'cancelled' %}
-                                      <span class="badge badge-pill bg-danger-light">Cancelled</span>
+                                      {% if appointment.appointment_status ==
+                                      'pending' %}
+                                      <span
+                                        class="badge badge-pill bg-warning-light"
+                                        >Pending</span
+                                      >
+                                      {% endif %} {% if
+                                      appointment.appointment_status ==
+                                      'confirmed' %}
+                                      <span
+                                        class="badge badge-pill bg-success-light"
+                                        >Confirmed</span
+                                      >
+                                      {% endif %} {% if
+                                      appointment.appointment_status ==
+                                      'cancelled' %}
+                                      <span
+                                        class="badge badge-pill bg-danger-light"
+                                        >Cancelled</span
+                                      >
                                       {% endif %}
                                     </td>
                                     <td class="text-right">
                                       <div class="table-action">
-                                        <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
+                                        <a
+                                          href="javascript:void(0);"
+                                          class="btn btn-sm bg-info-light"
+                                        >
                                           <i class="far fa-eye"></i> View
                                         </a>
 
-                                        <a href="{% url 'accept-appointment' pk=appointment.id %}" onclick="return confirm('Accept appointment?');" class="btn btn-sm bg-success-light">
+                                        <a
+                                          href="{% url 'accept-appointment' pk=appointment.id %}"
+                                          onclick="return confirm('Accept appointment?');"
+                                          class="btn btn-sm bg-success-light"
+                                        >
                                           <i class="fas fa-check"></i> Accept
                                         </a>
-                                        <a href="{% url 'reject-appointment' pk=appointment.id %}" onclick="return confirm('Reject Appointment?');" class="btn btn-sm bg-danger-light">
+                                        <a
+                                          href="{% url 'reject-appointment' pk=appointment.id %}"
+                                          onclick="return confirm('Reject Appointment?');"
+                                          class="btn btn-sm bg-danger-light"
+                                        >
                                           <i class="fas fa-times"></i> Cancel
                                         </a>
                                       </div>
                                     </td>
-                    
                                   </tr>
-                                  {% endfor %} 
-
-                               
+                                  {% endfor %}
                                 </tbody>
                               </table>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <!-- /Upcoming Appointment Tab --> {% endcomment %}
+                      <!-- /Upcoming Appointment Tab -->
+                      {% endcomment %}
 
                       <!-- Today Appointment Tab -->
                       <div class="tab-pane" id="today-appointments">
@@ -298,7 +334,6 @@
                                   </tr>
                                 </thead>
                                 <tbody>
-
                                   {% for today in today_appointments %}
                                   <tr>
                                     <td>
@@ -311,10 +346,19 @@
                                             src="{{ today.patient.featured_image.url }}"
                                             alt="User Image"
                                         /></a>
-                                        <a href="patient-profile.html">{{today.patient.name}}<span>#PT{{today.serial_number}}</span></a>
+                                        <a href="patient-profile.html"
+                                          >{{today.patient.name}}<span
+                                            >#PT{{today.serial_number}}</span
+                                          ></a
+                                        >
                                       </h2>
                                     </td>
-                                    <td>{{today.date}}<span class="d-block text-info">{{today.time}}</span></td>
+                                    <td>
+                                      {{today.date}}<span
+                                        class="d-block text-info"
+                                        >{{today.time}}</span
+                                      >
+                                    </td>
                                     <td>{{ today.appointment_type }}</td>
                                     <td>
                                       {{today.patient.email}}
@@ -323,17 +367,22 @@
                                       >
                                     </td>
                                     <td>
-                                      {% if today.appointment_status == 'pending' %}
-                                      <span class="badge badge-pill bg-warning-light">Pending</span>
-                                      {% endif %}
-                                      {% if today.appointment_status == 'confirmed' %}
-                                      <span class="badge badge-pill bg-success-light">Confirmed</span>
+                                      {% if today.appointment_status ==
+                                      'pending' %}
+                                      <span
+                                        class="badge badge-pill bg-warning-light"
+                                        >Pending</span
+                                      >
+                                      {% endif %} {% if today.appointment_status
+                                      == 'confirmed' %}
+                                      <span
+                                        class="badge badge-pill bg-success-light"
+                                        >Confirmed</span
+                                      >
                                       {% endif %}
                                     </td>
-                                  
                                   </tr>
                                   {% endfor %}
-                 
                                 </tbody>
                               </table>
                             </div>
@@ -356,9 +405,9 @@
       <!-- /Footer -->
     </div>
     <!-- /Main Wrapper -->
-  {% else %} 
-  <p> You are not logged in </p> 
-  {% endif %}
+    {% else %}
+    <p>You are not logged in</p>
+    {% endif %}
     <!-- jQuery -->
     <script src="{% static 'HealthStack-System/js/Normal/jquery.min.js' %}"></script>
 
@@ -381,15 +430,13 @@
 
     {% if messages %}
     <script>
-        {% for message in messages %}
-            $(document).ready(function () {
-                $('.toast').toast('show');
-            });
-        {% endfor %}
+      {% for message in messages %}
+          $(document).ready(function () {
+              $('.toast').toast('show');
+          });
+      {% endfor %}
     </script>
-  {% endif %}
-
-
+    {% endif %}
   </body>
 
   <!-- doccure/doctor-dashboard.html  30 Nov 2019 04:12:09 GMT -->
