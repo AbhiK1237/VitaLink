@@ -1,155 +1,309 @@
-<!-- health_analyzer/templates/health_analyzer/analysis.html -->
-{% extends "base.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=0"
+    />
+    <title>TotalCare - Health Analysis Results</title>
 
-{% block title %}Health Analysis Results{% endblock %}
+    <!-- Favicons -->
+    <link
+      type="image/x-icon"
+      href="{% static 'HealthStack-System/images/Normal/favicon.png' %}"
+      rel="icon"
+    />
 
-{% block extra_head %}
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<style>
-    .markdown-content h2 {
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'HealthStack-System/css/Normal/bootstrap.min.css' %}"
+    />
+
+    <!-- Fontawesome CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/fontawesome.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/all.min.css' %}"
+    />
+
+    <!-- Main CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'HealthStack-System/css/Normal/style.css' %}"
+    />
+
+    <!-- Marked.js for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+      .markdown-content {
+        text-align: left;
+        line-height: 1.6;
+        word-wrap: break-word;
+      }
+      .markdown-content h2 {
         font-size: 1.5rem;
         font-weight: 600;
         margin-top: 1.5rem;
         margin-bottom: 0.75rem;
-        color: #2563eb;
-    }
-    .markdown-content h3 {
+        color: #20c0f3;
+        text-align: left;
+      }
+      .markdown-content h3 {
         font-size: 1.25rem;
         font-weight: 600;
         margin-top: 1.25rem;
         margin-bottom: 0.5rem;
-    }
-    .markdown-content ul {
+        text-align: left;
+      }
+      .markdown-content ul {
         list-style-type: disc;
-        padding-left: 1.5rem;
-        margin-top: 0.5rem;
-        margin-bottom: 0.5rem;
-    }
-    .markdown-content ol {
-        list-style-type: decimal;
-        padding-left: 1.5rem;
-        margin-top: 0.5rem;
-        margin-bottom: 0.5rem;
-    }
-    .markdown-content p {
+        padding-left: 2rem;
+        margin-top: 0.75rem;
         margin-bottom: 0.75rem;
-    }
-    .markdown-content a {
-        color: #2563eb;
+        text-align: left;
+      }
+      .markdown-content ol {
+        list-style-type: decimal;
+        padding-left: 2rem;
+        margin-top: 0.75rem;
+        margin-bottom: 0.75rem;
+        text-align: left;
+      }
+      .markdown-content li {
+        margin-bottom: 0.5rem;
+        text-align: left;
+      }
+      .markdown-content p {
+        margin-bottom: 1rem;
+        text-align: left;
+      }
+      .markdown-content a {
+        color: #20c0f3;
         text-decoration: underline;
-    }
-    .chat-bubble {
+      }
+      .markdown-content strong, .markdown-content b {
+        font-weight: 600;
+      }
+      .markdown-content em, .markdown-content i {
+        font-style: italic;
+      }
+      .markdown-content blockquote {
+        border-left: 4px solid #e0e0e0;
+        padding-left: 1rem;
+        margin-left: 0;
+        color: #666;
+      }
+      .chat-bubble {
         max-width: 80%;
         padding: 0.75rem 1rem;
         border-radius: 1rem;
         margin-bottom: 1rem;
-    }
-    .user-bubble {
+        text-align: left;
+      }
+      .user-bubble {
         background-color: #e9f5ff;
         border: 1px solid #cce5ff;
         margin-left: auto;
         border-bottom-right-radius: 0.25rem;
-    }
-    .assistant-bubble {
+      }
+      .assistant-bubble {
         background-color: #f0f9ff;
         border: 1px solid #dbeafe;
         margin-right: auto;
         border-bottom-left-radius: 0.25rem;
-    }
-</style>
-{% endblock %}
+      }
+      #conversation-container {
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 15px;
+        border: 1px solid #f0f0f0;
+        border-radius: 5px;
+        background-color: #fafafa;
+      }
+      .card-body {
+        padding: 1.25rem;
+      }
+    </style>
+  </head>
 
-{% block content %}
-<div class="container mx-auto py-8 px-4">
-    <div class="max-w-4xl mx-auto">
-        <div class="mb-4 flex items-center">
-            <a href="{% url 'health_analyzer:analyze' %}" class="text-blue-600 hover:underline mr-2">
-                &larr; Back to Health Analysis
-            </a>
-            <span class="text-gray-400 text-sm">Analysis from {{ analysis.created_at|date:"F j, Y, g:i a" }}</span>
+  <body>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <!-- Header -->
+      <header class="header">{% include 'patient_navbar.html' %}</header>
+      <!-- /Header -->
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb-bar">
+        <div class="container-fluid">
+          <div class="row align-items-center">
+            <div class="col-md-12 col-12">
+              <nav aria-label="breadcrumb" class="page-breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url 'hospital_home' %}">Home</a></li>
+                  <li class="breadcrumb-item"><a href="{% url 'health_analyzer:analyze' %}">Health Analysis</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Results</li>
+                </ol>
+              </nav>
+              <h2 class="breadcrumb-title">Health Analysis Results</h2>
+            </div>
+          </div>
         </div>
-        
-        <div class="bg-white rounded-lg shadow overflow-hidden mb-8">
-            <div class="p-6 border-b">
-                <h1 class="text-2xl font-bold mb-2">Your Health Analysis</h1>
-                <p class="text-gray-600">Based on your health profile data and personal habits.</p>
-            </div>
-            
-            <!-- Current Health Assessment -->
-            <div class="p-6 border-b">
-                <h2 class="text-xl font-semibold mb-4 text-blue-700">Current Health Assessment</h2>
-                <div class="markdown-content prose max-w-none" id="health-assessment">
-                    {{ analysis.current_health_assessment|linebreaks }}
-                </div>
-            </div>
-            
-            <!-- Potential Health Issues -->
-            <div class="p-6 border-b bg-gray-50">
-                <h2 class="text-xl font-semibold mb-4 text-blue-700">Potential Health Issues</h2>
-                <div class="markdown-content prose max-w-none" id="health-issues">
-                    {{ analysis.potential_health_issues|linebreaks }}
-                </div>
-            </div>
-            
-            <!-- Risk Minimization Recommendations -->
-            <div class="p-6">
-                <h2 class="text-xl font-semibold mb-4 text-blue-700">Risk Minimization Recommendations</h2>
-                <div class="markdown-content prose max-w-none" id="recommendations">
-                    {{ analysis.risk_minimization_recommendations|linebreaks }}
-                </div>
-            </div>
-        </div>
-        
-        <!-- Follow-up Questions Section -->
-        <div class="bg-white rounded-lg shadow p-6 mb-8">
-            <h2 class="text-xl font-semibold mb-4">Follow-up Questions</h2>
-            
-            <div id="conversation-container" class="mb-6 max-h-96 overflow-y-auto">
-                {% if conversations %}
-                    {% for conv in conversations %}
-                        <div class="chat-bubble user-bubble">
-                            <p class="font-medium">You asked:</p>
-                            <p>{{ conv.question }}</p>
-                        </div>
-                        <div class="chat-bubble assistant-bubble markdown-content">
-                            <p class="font-medium">Health Assistant:</p>
-                            <div class="response-content">{{ conv.answer|linebreaks }}</div>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="text-center text-gray-500 py-4">
-                        <p>No follow-up questions yet. Ask something below!</p>
+      </div>
+      <!-- /Breadcrumb -->
+
+      <!-- Page Content -->
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header">
+                  <div class="row">
+                    <div class="col">
+                      <h4 class="card-title">Your Health Analysis</h4>
+                      <p class="text-muted">Analysis from {{ analysis.created_at|date:"F j, Y, g:i a" }}</p>
                     </div>
-                {% endif %}
+                    <div class="col-auto">
+                      <a href="{% url 'health_analyzer:analyze' %}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Back to Health Analysis
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="card-body">
+                  <!-- Current Health Assessment -->
+                  <div class="card mb-4">
+                    <div class="card-header bg-primary-light">
+                      <h5 class="card-title mb-0">Current Health Assessment</h5>
+                    </div>
+                    <div class="card-body">
+                      <div class="markdown-content" id="health-assessment">
+                        {{ analysis.current_health_assessment|linebreaks }}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Potential Health Issues -->
+                  <div class="card mb-4">
+                    <div class="card-header bg-warning-light">
+                      <h5 class="card-title mb-0">Potential Health Issues</h5>
+                    </div>
+                    <div class="card-body">
+                      <div class="markdown-content" id="health-issues">
+                        {{ analysis.potential_health_issues|linebreaks }}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Risk Minimization Recommendations -->
+                  <div class="card mb-4">
+                    <div class="card-header bg-success-light">
+                      <h5 class="card-title mb-0">Risk Minimization Recommendations</h5>
+                    </div>
+                    <div class="card-body">
+                      <div class="markdown-content" id="recommendations">
+                        {{ analysis.risk_minimization_recommendations|linebreaks }}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Follow-up Questions Section -->
+                  <div class="card">
+                    <div class="card-header">
+                      <h5 class="card-title mb-0">Follow-up Questions</h5>
+                    </div>
+                    <div class="card-body">
+                      <div id="conversation-container" class="mb-4">
+                        {% if conversations %}
+                          {% for conv in conversations %}
+                            <div class="chat-bubble user-bubble">
+                              <p class="font-weight-bold">You asked:</p>
+                              <p>{{ conv.question }}</p>
+                            </div>
+                            <div class="chat-bubble assistant-bubble markdown-content">
+                              <p class="font-weight-bold">Health Assistant:</p>
+                              <div class="response-content">{{ conv.answer|linebreaks }}</div>
+                            </div>
+                          {% endfor %}
+                        {% else %}
+                          <div class="text-center text-muted py-4">
+                            <p>No follow-up questions yet. Ask something below!</p>
+                          </div>
+                        {% endif %}
+                      </div>
+                      
+                      <form id="follow-up-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                          <label for="{{ form.question.id_for_label }}">Ask a follow-up question:</label>
+                          {{ form.question|safe }}
+                        </div>
+                        <div class="text-right">
+                          <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Ask Question
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <form id="follow-up-form" class="flex flex-col">
-                {% csrf_token %}
-                <label for="{{ form.question.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Ask a follow-up question:</label>
-                {{ form.question }}
-                <button type="submit" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full md:w-auto md:self-end">
-                    Ask Question
-                </button>
-            </form>
+          </div>
         </div>
-    </div>
-</div>
+      </div>
+      <!-- /Page Content -->
 
-{% block extra_scripts %}
-<script>
+      <!-- Footer -->
+      {% include 'footer.html' %}
+      <!-- /Footer -->
+    </div>
+    <!-- /Main Wrapper -->
+
+    <!-- jQuery -->
+    <script src="{% static 'HealthStack-System/js/Normal/jquery.min.js' %}"></script>
+    
+    <!-- Bootstrap Core JS -->
+    <script src="{% static 'HealthStack-System/js/Normal/popper.min.js' %}"></script>
+    <script src="{% static 'HealthStack-System/js/Normal/bootstrap.min.js' %}"></script>
+    
+    <!-- Custom JS -->
+    <script src="{% static 'HealthStack-System/Outside_assets/js/script.js' %}"></script>
+
+  <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Convert markdown to HTML for analysis sections
+        // Configure marked options for better rendering
+        marked.setOptions({
+            breaks: true,           // Add line breaks as <br>
+            gfm: true,              // Use GitHub Flavored Markdown
+            headerIds: true,        // Add IDs to headers
+            mangle: false,          // Don't escape HTML
+            sanitize: false,        // Don't sanitize HTML
+            smartLists: true,       // Use smarter list behavior
+            smartypants: true,      // Use "smart" typographic punctuation
+            xhtml: false            // Don't use self-closing tags
+        });
+        
         function renderMarkdown() {
             document.querySelectorAll('.markdown-content').forEach(function(el) {
-                if (el.classList.contains('response-content')) {
-                    el.innerHTML = marked.parse(el.textContent);
+                // Store original text content before parsing
+                const originalText = el.textContent.trim();
+                if (originalText) {
+                    // Parse markdown to HTML
+                    el.innerHTML = marked.parse(originalText);
                 }
             });
         }
         renderMarkdown();
         
-        // Handle follow-up question form submission
         const form = document.getElementById('follow-up-form');
         const conversationContainer = document.getElementById('conversation-container');
         
@@ -161,36 +315,31 @@
             
             if (!question) return;
             
-            // Show loading state
             const submitButton = form.querySelector('button[type="submit"]');
-            const originalButtonText = submitButton.textContent;
+            const originalButtonText = submitButton.innerHTML;
             submitButton.disabled = true;
-            submitButton.textContent = 'Processing...';
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             
-            // Create user bubble
             const userBubble = document.createElement('div');
             userBubble.className = 'chat-bubble user-bubble';
             userBubble.innerHTML = `
-                <p class="font-medium">You asked:</p>
+                <p class="font-weight-bold">You asked:</p>
                 <p>${question}</p>
             `;
             conversationContainer.appendChild(userBubble);
             
-            // Create placeholder for assistant response
             const assistantBubble = document.createElement('div');
             assistantBubble.className = 'chat-bubble assistant-bubble';
             assistantBubble.innerHTML = `
-                <p class="font-medium">Health Assistant:</p>
+                <p class="font-weight-bold">Health Assistant:</p>
                 <div class="response-content">
-                    <p class="text-gray-500">Thinking...</p>
+                    <p class="text-muted"><i class="fas fa-spinner fa-spin"></i> Thinking...</p>
                 </div>
             `;
             conversationContainer.appendChild(assistantBubble);
             
-            // Scroll to bottom
             conversationContainer.scrollTop = conversationContainer.scrollHeight;
             
-            // Send request to server
             const formData = new FormData();
             formData.append('question', question);
             formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
@@ -205,33 +354,28 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update assistant bubble with response
                     const responseDiv = assistantBubble.querySelector('.response-content');
                     responseDiv.innerHTML = marked.parse(data.answer);
                     
-                    // Reset form
                     questionInput.value = '';
                 } else {
-                    // Show error
                     assistantBubble.querySelector('.response-content').innerHTML = 
-                        `<p class="text-red-500">Error: ${data.error || 'Something went wrong'}</p>`;
+                        `<p class="text-danger">Error: ${data.error || 'Something went wrong'}</p>`;
                 }
                 
-                // Scroll to new message
                 conversationContainer.scrollTop = conversationContainer.scrollHeight;
             })
             .catch(error => {
                 console.error('Error:', error);
                 assistantBubble.querySelector('.response-content').innerHTML = 
-                    '<p class="text-red-500">Error: Failed to get a response. Please try again.</p>';
+                    '<p class="text-danger">Error: Failed to get a response. Please try again.</p>';
             })
             .finally(() => {
-                // Reset button state
                 submitButton.disabled = false;
-                submitButton.textContent = originalButtonText;
+                submitButton.innerHTML = originalButtonText;
             });
         });
     });
-</script>
-{% endblock %}
-{% endblock %}
+  </script>
+  </body>
+</html>

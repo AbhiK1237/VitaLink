@@ -1,169 +1,334 @@
-<!-- health_analyzer/templates/health_analyzer/analyze_form.html -->
-{% extends "base.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=0"
+    />
+    <title>TotalCare - Health Analysis</title>
 
-{% block title %}Health Profile{% endblock %}
+    <!-- Favicons -->
+    <link
+      type="image/x-icon"
+      href="{% static 'HealthStack-System/images/Normal/favicon.png' %}"
+      rel="icon"
+    />
 
-{% block content %}
-<div class="container mx-auto py-8 px-4">
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
-        <h1 class="text-2xl font-bold mb-6">{% if is_new %}Create{% else %}Update{% endif %} Your Health Profile</h1>
-        
-        <div class="mb-6 p-4 bg-blue-50 rounded-lg">
-            <p class="text-blue-800">
-                <strong>Note:</strong> Please provide accurate information for better analysis. 
-                All your health data is stored securely and is only used for generating personalized health insights.
-            </p>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'HealthStack-System/css/Normal/bootstrap.min.css' %}"
+    />
+
+    <!-- Fontawesome CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/fontawesome.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/all.min.css' %}"
+    />
+
+    <!-- Datetimepicker CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'HealthStack-System/css/Normal/bootstrap-datetimepicker.min.css' %}"
+    />
+
+    <!-- Select2 CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'HealthStack-System/plugins/Normal/select2/css/select2.min.css' %}"
+    />
+
+    <!-- Main CSS -->
+    <link
+      rel="stylesheet"
+      href="{% static 'HealthStack-System/css/Normal/style.css' %}"
+    />
+  </head>
+
+  <body>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <!-- Header -->
+      <header class="header">{% include 'patient_navbar.html' %}</header>
+      <!-- /Header -->
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb-bar">
+        <div class="container-fluid">
+          <div class="row align-items-center">
+            <div class="col-md-12 col-12">
+              <nav aria-label="breadcrumb" class="page-breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url 'hospital_home' %}">Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Health Profile</li>
+                </ol>
+              </nav>
+              <h2 class="breadcrumb-title">{% if is_new %}Create{% else %}Update{% endif %} Your Health Profile</h2>
+            </div>
+          </div>
         </div>
-        
-        <form method="post" class="space-y-6">
-            {% csrf_token %}
-            
-            <!-- Basic Information -->
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <h2 class="text-lg font-semibold mb-4">Basic Information</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="form-group">
-                        <label for="{{ form.age.id_for_label }}" class="block text-sm font-medium text-gray-700">Age</label>
-                        {{ form.age }}
-                        {% if form.age.errors %}
-                            <p class="text-red-500 text-xs mt-1">{{ form.age.errors.0 }}</p>
-                        {% endif %}
+      </div>
+      <!-- /Breadcrumb -->
+
+      <!-- Page Content -->
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <strong>Note:</strong> Please provide accurate information for better analysis. 
+                    All your health data is stored securely and is only used for generating personalized health insights.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+
+                  <form method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Basic Information -->
+                    <div class="card">
+                      <div class="card-header">
+                        <h4 class="card-title">Basic Information</h4>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.age.id_for_label }}">Age <span class="text-danger">*</span></label>
+                              {% if patient_age %}
+                                <input type="text" name="age" value="{{ patient_age }}" class="form-control" readonly>
+                              {% else %}
+                                {{ form.age }}
+                              {% endif %}
+                              {% if form.age.errors %}
+                                <div class="text-danger">{{ form.age.errors.0 }}</div>
+                              {% endif %}
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.gender.id_for_label }}">Gender <span class="text-danger">*</span></label>
+                              {{ form.gender }}
+                              {% if form.gender.errors %}
+                                <div class="text-danger">{{ form.gender.errors.0 }}</div>
+                              {% endif %}
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.height.id_for_label }}">Height (cm) <span class="text-danger">*</span></label>
+                              {{ form.height }}
+                              {% if form.height.errors %}
+                                <div class="text-danger">{{ form.height.errors.0 }}</div>
+                              {% endif %}
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.weight.id_for_label }}">Weight (kg) <span class="text-danger">*</span></label>
+                              {{ form.weight }}
+                              {% if form.weight.errors %}
+                                <div class="text-danger">{{ form.weight.errors.0 }}</div>
+                              {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="{{ form.gender.id_for_label }}" class="block text-sm font-medium text-gray-700">Gender</label>
-                        {{ form.gender }}
-                        {% if form.gender.errors %}
-                            <p class="text-red-500 text-xs mt-1">{{ form.gender.errors.0 }}</p>
-                        {% endif %}
+                    <!-- Medical Metrics -->
+                    <div class="card">
+                      <div class="card-header">
+                        <h4 class="card-title">Medical Metrics (Optional)</h4>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.blood_pressure_systolic.id_for_label }}">Blood Pressure Systolic</label>
+                              {{ form.blood_pressure_systolic }}
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.blood_pressure_diastolic.id_for_label }}">Blood Pressure Diastolic</label>
+                              {{ form.blood_pressure_diastolic }}
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.heart_rate.id_for_label }}">Heart Rate (bpm)</label>
+                              {{ form.heart_rate }}
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.cholesterol_level.id_for_label }}">Cholesterol Level</label>
+                              {{ form.cholesterol_level }}
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.blood_sugar.id_for_label }}">Blood Sugar</label>
+                              {{ form.blood_sugar }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="{{ form.height.id_for_label }}" class="block text-sm font-medium text-gray-700">Height (cm)</label>
-                        {{ form.height }}
-                        {% if form.height.errors %}
-                            <p class="text-red-500 text-xs mt-1">{{ form.height.errors.0 }}</p>
-                        {% endif %}
+                    <!-- Medical History -->
+                    <div class="card">
+                      <div class="card-header">
+                        <h4 class="card-title">Medical History</h4>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <label for="{{ form.family_history.id_for_label }}">Family History</label>
+                              {{ form.family_history }}
+                              <small class="form-text text-muted">{{ form.family_history.help_text }}</small>
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <label for="{{ form.existing_conditions.id_for_label }}">Existing Conditions</label>
+                              {{ form.existing_conditions }}
+                              <small class="form-text text-muted">{{ form.existing_conditions.help_text }}</small>
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-12">
+                            <div class="form-group">
+                              <label for="{{ form.medications.id_for_label }}">Medications</label>
+                              {{ form.medications }}
+                              <small class="form-text text-muted">{{ form.medications.help_text }}</small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="{{ form.weight.id_for_label }}" class="block text-sm font-medium text-gray-700">Weight (kg)</label>
-                        {{ form.weight }}
-                        {% if form.weight.errors %}
-                            <p class="text-red-500 text-xs mt-1">{{ form.weight.errors.0 }}</p>
-                        {% endif %}
+                    <!-- Lifestyle & Habits -->
+                    <div class="card">
+                      <div class="card-header">
+                        <h4 class="card-title">Lifestyle & Habits</h4>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.smoker.id_for_label }}">Do you smoke?</label>
+                              <div class="form-check">
+                                {{ form.smoker }}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.alcohol_consumption.id_for_label }}">Alcohol Consumption</label>
+                              {{ form.alcohol_consumption }}
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.exercise_frequency.id_for_label }}">Exercise Frequency</label>
+                              {{ form.exercise_frequency }}
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.exercise_intensity.id_for_label }}">Exercise Intensity</label>
+                              {{ form.exercise_intensity }}
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.diet_type.id_for_label }}">Diet Type</label>
+                              {{ form.diet_type }}
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.sleep_hours.id_for_label }}">Sleep Hours (per night)</label>
+                              {{ form.sleep_hours }}
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.stress_level.id_for_label }}">Stress Level</label>
+                              {{ form.stress_level }}
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="{{ form.water_intake.id_for_label }}">Water Intake</label>
+                              {{ form.water_intake }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
+                    
+                    <div class="submit-section">
+                      <a href="{% url 'health_analyzer:analyze' %}" class="btn btn-secondary submit-btn">Cancel</a>
+                      <button type="submit" class="btn btn-primary submit-btn">Save Information </button>
+                    </div>
+                  </form>
                 </div>
+              </div>
             </div>
-            
-            <!-- Medical Metrics -->
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <h2 class="text-lg font-semibold mb-4">Medical Metrics (Optional)</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="form-group">
-                        <label for="{{ form.blood_pressure_systolic.id_for_label }}" class="block text-sm font-medium text-gray-700">Blood Pressure Systolic</label>
-                        {{ form.blood_pressure_systolic }}
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="{{ form.blood_pressure_diastolic.id_for_label }}" class="block text-sm font-medium text-gray-700">Blood Pressure Diastolic</label>
-                        {{ form.blood_pressure_diastolic }}
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="{{ form.heart_rate.id_for_label }}" class="block text-sm font-medium text-gray-700">Heart Rate (bpm)</label>
-                        {{ form.heart_rate }}
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="{{ form.cholesterol_level.id_for_label }}" class="block text-sm font-medium text-gray-700">Cholesterol Level</label>
-                        {{ form.cholesterol_level }}
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="{{ form.blood_sugar.id_for_label }}" class="block text-sm font-medium text-gray-700">Blood Sugar</label>
-                        {{ form.blood_sugar }}
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Medical History -->
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <h2 class="text-lg font-semibold mb-4">Medical History</h2>
-                <div class="space-y-4">
-                    <div class="form-group">
-                        <label for="{{ form.family_history.id_for_label }}" class="block text-sm font-medium text-gray-700">Family History</label>
-                        {{ form.family_history }}
-                        <p class="text-xs text-gray-500 mt-1">{{ form.family_history.help_text }}</p>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="{{ form.existing_conditions.id_for_label }}" class="block text-sm font-medium text-gray-700">Existing Conditions</label>
-                        {{ form.existing_conditions }}
-                        <p class="text-xs text-gray-500 mt-1">{{ form.existing_conditions.help_text }}</p>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="{{ form.medications.id_for_label }}" class="block text-sm font-medium text-gray-700">Medications</label>
-                        {{ form.medications }}
-                        <p class="text-xs text-gray-500 mt-1">{{ form.medications.help_text }}</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Lifestyle & Habits -->
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <h2 class="text-lg font-semibold mb-4">Lifestyle & Habits</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="form-group">
-                        <label for="{{ form.smoker.id_for_label }}" class="block text-sm font-medium text-gray-700">Do you smoke?</label>
-                        {{ form.smoker }}
-                    </div>
-                    
-                    <div class="form-group">
-            
-                            <!-- Continuing health_analyzer/templates/health_analyzer/analyze_form.html -->
-                        <label for="{{ form.alcohol_consumption.id_for_label }}" class="block text-sm font-medium text-gray-700">Alcohol Consumption</label>
-                        {{ form.alcohol_consumption }}
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="{{ form.exercise_frequency.id_for_label }}" class="block text-sm font-medium text-gray-700">Exercise Frequency</label>
-                        {{ form.exercise_frequency }}
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="{{ form.exercise_intensity.id_for_label }}" class="block text-sm font-medium text-gray-700">Exercise Intensity</label>
-                        {{ form.exercise_intensity }}
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="{{ form.diet_type.id_for_label }}" class="block text-sm font-medium text-gray-700">Diet Type</label>
-                        {{ form.diet_type }}
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="{{ form.sleep_hours.id_for_label }}" class="block text-sm font-medium text-gray-700">Sleep Hours (per night)</label>
-                        {{ form.sleep_hours }}
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="{{ form.stress_level.id_for_label }}" class="block text-sm font-medium text-gray-700">Stress Level</label>
-                        {{ form.stress_level }}
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="{{ form.water_intake.id_for_label }}" class="block text-sm font-medium text-gray-700">Water Intake</label>
-                        {{ form.water_intake }}
-                    </div>
-                </div>
-            </div>
-            
-            <div class="flex justify-end space-x-3">
-                <a href="{% url 'health_analyzer:analyze' %}" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Cancel</a>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Profile</button>
-            </div>
-        </form>
+          </div>
+        </div>
+      </div>
+      <!-- /Page Content -->
+
+      <!-- Footer -->
+      {% include 'footer.html' %}
+      <!-- /Footer -->
     </div>
-</div>
-{% endblock %}
+    <!-- /Main Wrapper -->
+
+    <!-- jQuery -->
+    <script src="{% static 'HealthStack-System/js/Normal/jquery.min.js' %}"></script>
+    
+    <!-- Bootstrap Core JS -->
+    <script src="{% static 'HealthStack-System/js/Normal/popper.min.js' %}"></script>
+    <script src="{% static 'HealthStack-System/js/Normal/bootstrap.min.js' %}"></script>
+    
+    <!-- Select2 JS -->
+    <script src="{% static 'HealthStack-System/plugins/Normal/select2/js/select2.min.js' %}"></script>
+    
+    <!-- Datetimepicker JS -->
+    <script src="{% static 'HealthStack-System/js/Normal/moment.min.js' %}"></script>
+    <script src="{% static 'HealthStack-System/js/Normal/bootstrap-datetimepicker.min.js' %}"></script>
+    
+    <!-- Custom JS -->
+    <script src="{% static 'HealthStack-System/Outside_assets/js/script.js' %}"></script>
+  </body>
+</html>

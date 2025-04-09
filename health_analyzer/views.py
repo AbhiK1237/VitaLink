@@ -28,6 +28,11 @@ def health_profile_view(request):
         profile = None
         is_new = True
     
+    patient_age = None
+    if hasattr(request.user, 'patient'):
+        patient = request.user.patient
+        patient_age = patient.age
+    
     if request.method == 'POST':
         form = HealthProfileForm(request.POST, instance=profile)
         if form.is_valid():
@@ -37,11 +42,16 @@ def health_profile_view(request):
             messages.success(request, "Health profile saved successfully!")
             return redirect('health_analyzer:analyze')
     else:
-        form = HealthProfileForm(instance=profile)
+        initial_data = {}
+        if patient_age is not None:
+            initial_data['age'] = patient_age
+        
+        form = HealthProfileForm(instance=profile, initial=initial_data)
     
     return render(request, 'health_analyzer/analyze_form.html', {
         'form': form,
-        'is_new': is_new
+        'is_new': is_new,
+        'patient_age': patient_age
     })
 
 
@@ -102,7 +112,7 @@ def analysis_results(request, analysis_id):
     # Form for follow-up questions
     form = FollowUpQuestionForm()
     
-    return render(request, 'health_analyzer/analysis.html', {
+    return render(request, 'health_analyzer/analysis_results.html', {
         'analysis': analysis,
         'conversations': conversations,
         'form': form
