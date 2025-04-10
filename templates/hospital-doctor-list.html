@@ -73,9 +73,7 @@
     <div class="main-wrapper">
       <!-- Header -->
       <header class="header">
-        {% if user.is_authenticated and user.is_patient %} {% include
-        'patient_navbar.html' %} {% endif %} {% if user.is_authenticated and
-        user.is_doctor %} {% include 'doctor-navbar.html' %} {% endif %}
+        {% if user.is_authenticated and user.is_patient %} {% include 'patient_navbar.html' %} {% endif %} {% if user.is_authenticated and user.is_doctor %} {% include 'doctor-navbar.html' %} {% endif %}
       </header>
       <!-- /Header -->
 
@@ -133,10 +131,7 @@
             <!-- Profile Sidebar -->
             <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
               <div>
-                {% if user.is_authenticated and user.is_patient %} {% include
-                'patient-sidebar.html' %} {% endif %} {% if
-                user.is_authenticated and user.is_doctor %} {% include
-                'doctor-sidebar.html' %} {% endif %}
+                {% if user.is_authenticated and user.is_patient %} {% include 'patient-sidebar.html' %} {% endif %} {% if user.is_authenticated and user.is_doctor %} {% include 'doctor-sidebar.html' %} {% endif %}
               </div>
             </div>
             <!-- / Profile Sidebar -->
