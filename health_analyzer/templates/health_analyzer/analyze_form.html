@@ -7,6 +7,70 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=0"
     />
+    <style>
+        /* Ensure form fields are well aligned */
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+          margin-bottom: 1rem;
+        }
+      
+        .form-group label {
+          font-weight: 500;
+          margin-bottom: 0.25rem;
+        }
+      
+        .form-control,
+        .form-check input,
+        select,
+        textarea {
+          border-radius: 0.5rem;
+          padding: 0.5rem 0.75rem;
+          font-size: 0.95rem;
+        }
+      
+        /* Prevent dragging of labels/inputs */
+        label,
+        input,
+        select,
+        textarea {
+          user-drag: none;
+          -webkit-user-drag: none;
+          user-select: none;
+          -webkit-user-select: none;
+        }
+      
+        .form-check {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+      
+        .submit-section {
+          margin-top: 1.5rem;
+          display: flex;
+          justify-content: flex-end;
+          gap: 1rem;
+        }
+      
+        .card-title {
+          font-size: 1.2rem;
+          font-weight: 600;
+          margin-bottom: 0;
+        }
+      
+        .card-header {
+          background-color: #f9f9f9;
+          border-bottom: 1px solid #eaeaea;
+          padding: 1rem;
+        }
+      
+        .card-body {
+          padding: 1.5rem;
+        }
+      </style>
+      
     <title>TotalCare - Health Analysis</title>
 
     <!-- Favicons -->

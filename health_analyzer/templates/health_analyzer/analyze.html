@@ -3,40 +3,35 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
     <title>TotalCare - Health Analysis</title>
 
     <!-- Favicons -->
-    <link
-      type="image/x-icon"
-      href="{% static 'HealthStack-System/images/Normal/favicon.png' %}"
-      rel="icon"
-    />
+    <link type="image/x-icon" href="{% static 'HealthStack-System/images/Normal/favicon.png' %}" rel="icon" />
 
     <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/css/Normal/bootstrap.min.css' %}"
-    />
+    <link rel="stylesheet" href="{% static 'HealthStack-System/css/Normal/bootstrap.min.css' %}" />
 
     <!-- Fontawesome CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/fontawesome.min.css' %}"
-    />
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/all.min.css' %}"
-    />
+    <link rel="stylesheet" href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/fontawesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'HealthStack-System/plugins/Normal/fontawesome/css/all.min.css' %}" />
 
     <!-- Main CSS -->
-    <link
-      rel="stylesheet"
-      href="{% static 'HealthStack-System/css/Normal/style.css' %}"
-    />
+    <link rel="stylesheet" href="{% static 'HealthStack-System/css/Normal/style.css' %}" />
+
+    <style>
+      #loader-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        z-index: 1050;
+        transition: opacity 0.3s ease;
+      }
+    </style>
   </head>
 
   <body>
@@ -44,7 +39,6 @@
     <div class="main-wrapper">
       <!-- Header -->
       <header class="header">{% include 'patient_navbar.html' %}</header>
-      <!-- /Header -->
 
       <!-- Breadcrumb -->
       <div class="breadcrumb-bar">
@@ -62,7 +56,6 @@
           </div>
         </div>
       </div>
-      <!-- /Breadcrumb -->
 
       <!-- Page Content -->
       <div class="content">
@@ -78,14 +71,13 @@
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
-                      
+
                   <div class="mb-4">
-                    <a href="{% url 'health_analyzer:analysis_results' latest_analysis.id %}" 
-                      class="btn btn-primary submit-btn">
+                    <a href="{% url 'health_analyzer:analysis_results' latest_analysis.id %}" class="btn btn-primary submit-btn">
                       <i class="fas fa-eye"></i> View Latest Analysis
                     </a>
-                    
-                    <form method="post" class="d-inline">
+
+                    <form method="post" class="d-inline show-loader-form">
                       {% csrf_token %}
                       <button type="submit" class="btn btn-success submit-btn">
                         <i class="fas fa-sync-alt"></i> Generate New Analysis
@@ -99,15 +91,15 @@
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
-                      
-                  <form method="post" class="mb-4">
+
+                  <form method="post" class="mb-4 show-loader-form">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-primary submit-btn">
                       <i class="fas fa-chart-line"></i> Generate Health Analysis
                     </button>
                   </form>
                   {% endif %}
-                  
+
                   <div class="card">
                     <div class="card-header">
                       <h4 class="card-title">Your Health Profile Summary</h4>
@@ -132,7 +124,7 @@
                             </div>
                           </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                           <div class="card">
                             <div class="card-header bg-light">
@@ -152,7 +144,7 @@
                           </div>
                         </div>
                       </div>
-                      
+
                       <div class="text-right mt-4">
                         <a href="{% url 'health_analyzer:profile' %}" class="btn btn-outline-primary">
                           <i class="fas fa-edit"></i> Edit Health Profile
@@ -166,22 +158,37 @@
           </div>
         </div>
       </div>
-      <!-- /Page Content -->
 
       <!-- Footer -->
       {% include 'footer.html' %}
-      <!-- /Footer -->
     </div>
-    <!-- /Main Wrapper -->
+
+    <!-- Loader Spinner -->
+    <div id="loader-overlay">
+      <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
 
     <!-- jQuery -->
     <script src="{% static 'HealthStack-System/js/Normal/jquery.min.js' %}"></script>
-    
+
     <!-- Bootstrap Core JS -->
     <script src="{% static 'HealthStack-System/js/Normal/popper.min.js' %}"></script>
     <script src="{% static 'HealthStack-System/js/Normal/bootstrap.min.js' %}"></script>
-    
+
     <!-- Custom JS -->
     <script src="{% static 'HealthStack-System/Outside_assets/js/script.js' %}"></script>
+
+    <!-- Loader Trigger Script -->
+    <script>
+      document.querySelectorAll('.show-loader-form').forEach(form => {
+        form.addEventListener('submit', function () {
+          document.getElementById('loader-overlay').style.display = 'block';
+        });
+      });
+    </script>
   </body>
 </html>

@@ -1,85 +1,101 @@
-<!-- health_analyzer/templates/health_analyzer/analyze.html -->
 {% extends "base.html" %}
 
-{% block title %}Health Analysis{% endblock %}
+{% block title %}Health Analysis Results{% endblock %}
 
 {% block content %}
-<div class="container mx-auto py-8 px-4">
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
-        <h1 class="text-2xl font-bold mb-6">Health Analysis</h1>
-        
-        {% if latest_analysis %}
-        <div class="mb-6 p-4 bg-green-50 rounded-lg">
-            <p class="text-green-800">
-                <strong>You already have a recent health analysis!</strong> You can view it or generate a new one.
-            </p>
+<div class="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
+    <h1 class="text-2xl font-bold mb-6">Your Health Analysis Results</h1>
+
+    <!-- Analysis Sections -->
+    <div class="space-y-6">
+        <div>
+            <h2 class="text-xl font-semibold mb-2">🩺 Current Health Assessment</h2>
+            <p class="text-gray-700">{{ analysis.current_health_assessment }}</p>
         </div>
-            
-        <div class="flex space-x-4 mb-8">
-            <a href="{% url 'health_analyzer:analysis_results' latest_analysis.id %}" 
-               class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                View Latest Analysis
-            </a>
-            
-            <form method="post" class="inline">
-                {% csrf_token %}
-                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-                    Generate New Analysis
-                </button>
-            </form>
+
+        <div>
+            <h2 class="text-xl font-semibold mb-2">⚠️ Potential Health Issues</h2>
+            <p class="text-gray-700">{{ analysis.potential_health_issues }}</p>
         </div>
-        {% else %}
-        <div class="mb-6 p-4 bg-blue-50 rounded-lg">
-            <p class="text-blue-800">
-                Ready to analyze your health data? Click the button below to generate your personalized health analysis using Google Gemini AI.
-            </p>
+
+        <div>
+            <h2 class="text-xl font-semibold mb-2">✅ Risk Minimization Recommendations</h2>
+            <p class="text-gray-700">{{ analysis.risk_minimization_recommendations }}</p>
         </div>
-            
-        <form method="post" class="mb-8">
-            {% csrf_token %}
-            <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
-                Generate Health Analysis
-            </button>
-        </form>
-        {% endif %}
-        
-        <div class="bg-gray-50 p-6 rounded-lg">
-            <h2 class="text-xl font-semibold mb-4">Your Health Profile Summary</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h3 class="font-medium text-gray-700 mb-2">Basic Information</h3>
-                    <ul class="list-disc list-inside text-gray-600 space-y-1">
-                        <li>Age: {{ profile.age }}</li>
-                        <li>Gender: {{ profile.gender|title }}</li>
-                        <li>Height: {{ profile.height }} cm</li>
-                        <li>Weight: {{ profile.weight }} kg</li>
-                        {% if profile.blood_pressure_systolic and profile.blood_pressure_diastolic %}
-                        <li>Blood Pressure: {{ profile.blood_pressure_systolic }}/{{ profile.blood_pressure_diastolic }} mmHg</li>
-                        {% endif %}
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="font-medium text-gray-700 mb-2">Lifestyle & Habits</h3>
-                    <ul class="list-disc list-inside text-gray-600 space-y-1">
-                        <li>Smoker: {% if profile.smoker %}Yes{% else %}No{% endif %}</li>
-                        <li>Alcohol: {{ profile.alcohol_consumption|default:"Not specified"|title }}</li>
-                        <li>Exercise: {{ profile.exercise_frequency|default:"Not specified"|title }}</li>
-                        <li>Diet: {{ profile.diet_type|default:"Not specified"|title }}</li>
-                        {% if profile.sleep_hours %}
-                        <li>Sleep: {{ profile.sleep_hours }} hours/night</li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="mt-4 text-right">
-                <a href="{% url 'health_analyzer:profile' %}" class="text-blue-600 hover:underline">
-                    Edit Health Profile
-                </a>
-            </div>
+
+        <div>
+            <h2 class="text-xl font-semibold mb-2">🧠 Full Gemini AI Report</h2>
+            <pre class="bg-gray-100 p-4 rounded text-sm whitespace-pre-wrap text-gray-800">
+{{ analysis.full_analysis }}
+            </pre>
         </div>
     </div>
+
+    <!-- Follow-up Q&A -->
+    <div class="mt-10">
+        <h2 class="text-xl font-bold mb-4">🤔 Follow-Up Questions</h2>
+
+        {% if conversations %}
+        <div class="space-y-4 mb-6">
+            {% for convo in conversations %}
+            <div class="bg-gray-50 p-4 rounded border">
+                <p class="text-blue-800 font-semibold">You:</p>
+                <p class="text-gray-800 mb-2">{{ convo.question }}</p>
+                <p class="text-green-800 font-semibold">Gemini:</p>
+                <p class="text-gray-700">{{ convo.answer }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-600 mb-6">No follow-up questions yet. Ask something below!</p>
+        {% endif %}
+
+        <!-- Ask a question -->
+        <form id="follow-up-form" method="post" class="space-y-4">
+            {% csrf_token %}
+            <textarea name="question" id="question" rows="3" class="w-full p-3 border rounded" placeholder="Type your follow-up question here..." required></textarea>
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                Ask Gemini
+            </button>
+        </form>
+
+        <div id="follow-up-response" class="mt-4"></div>
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('follow-up-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const question = document.getElementById('question').value;
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    const responseDiv = document.getElementById('follow-up-response');
+    responseDiv.innerHTML = "<p class='text-blue-500'>Sending your question to Gemini...</p>";
+
+    try {
+        const res = await fetch("", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrfToken,
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({ question })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            location.reload();  // Refresh to show the new conversation
+        } else {
+            responseDiv.innerHTML = `<p class="text-red-600">${data.error}</p>`;
+        }
+    } catch (err) {
+        console.error(err);
+        responseDiv.innerHTML = "<p class='text-red-600'>Something went wrong. Please try again.</p>";
+    }
+});
+</script>
 {% endblock %}
