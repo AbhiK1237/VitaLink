@@ -58,11 +58,10 @@ INSTALLED_APPS = [
     'ChatApp.apps.ChatappConfig',
     'debug_toolbar',
     'health_analyzer',
-
- 
-
 ]
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://totalcare.onrender.com',
+]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
