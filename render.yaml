@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: vitalink
+    runtime: python
+    pythonVersion: 3.11.8
+    buildCommand: ./build.sh
+    startCommand: gunicorn healthstack.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: STORE_ID
+        sync: false
+      - key: STORE_PASSWORD
+        sync: false
+      - key: STORE_NAME
+        sync: false
+    plan: free
